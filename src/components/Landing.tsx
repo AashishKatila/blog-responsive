@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { MdOutlineArrowOutward } from "react-icons/md";
 import Labels from "./Labels";
+import BlogCard from "./BlogCard";
 
 const Landing = () => {
   const otherBlogs = [
@@ -54,30 +55,13 @@ const Landing = () => {
         </div>
         <div className="w-full md:w-1/2 flex flex-col gap-4 md:gap-0 ">
           {otherBlogs.map((item) => (
-            <div className="md:h-[50vh] h-[70vh] flex md:flex-row flex-col gap-4 ">
-              <div className="md:w-1/2 h-full w-full relative">
-                <Image
-                  src={item.imageSource}
-                  alt="Image"
-                  fill
-                  objectFit="contain"
-                />
-              </div>
-              <div className="md:w-1/2 w-full flex flex-col gap-2 justify-center ">
-                <h2 className="text-purple ">{item.date}</h2>
-                <div className="flex justify-between items-center cursor-pointer group">
-                  <h1 className="text-offwhite text-xl font-medium  ">
-                    {item.title}
-                  </h1>
-                  <MdOutlineArrowOutward
-                    size={26}
-                    className="text-white transition-all duration-300 ease-in-out group-hover:-translate-y-1 group-hover:text-purple "
-                  />
-                </div>
-                <p className="text-gray-500 ">{item.description}</p>
-                <Labels label={item.labelText} />
-              </div>
-            </div>
+            <BlogCard
+              date={item.date}
+              description={item.description}
+              imageSource={item.imageSource}
+              labelText={item.labelText}
+              title={item.title}
+            />
           ))}
         </div>
       </div>
