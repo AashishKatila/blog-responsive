@@ -11,6 +11,8 @@ const config: Config = {
       colors: {
         bgcolor: "#090D1F",
         offwhite:"#EFEFEF",
+        purple: "#6941C6",
+        label_bg:"#FDF2FA",
       },
     },
   },
