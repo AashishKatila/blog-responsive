@@ -1,5 +1,6 @@
 export interface IButton{
     text: string;
+    buttonStyle?: string;
 }
 
 export interface ILabel{
@@ -12,4 +13,5 @@ export interface IBlogCard{
     title: string;
     description: string;
     labelText: "Food" | "Tech" | "Research";
+    className?: string;
 }

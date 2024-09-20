@@ -3,6 +3,7 @@ import { MdOutlineArrowOutward } from "react-icons/md";
 import Labels from "./Labels";
 import Image from "next/image";
 import { IBlogCard } from "@/utils/types";
+import { cn } from "@/lib/utils";
 
 const BlogCard = ({
   imageSource,
@@ -10,9 +11,15 @@ const BlogCard = ({
   title,
   description,
   labelText,
+  className,
 }: IBlogCard) => {
   return (
-    <div className="md:h-[50vh] h-[70vh] flex md:flex-row flex-col gap-4 ">
+    <div
+      className={cn(
+        "md:h-[40vh] h-[50vh] flex md:flex-row flex-col gap-4 px-2 ",
+        className
+      )}
+    >
       <div className="md:w-1/2 h-full w-full relative">
         <Image src={imageSource} alt="Image" fill objectFit="contain" />
       </div>
