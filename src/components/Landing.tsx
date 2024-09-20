@@ -25,10 +25,10 @@ const Landing = () => {
     },
   ];
   return (
-    <div className="md:px-32  px-8  pt-6  mb-20 text-offwhite">
+    <div className="md:px-32 px-8 pt-6 text-offwhite ">
       <h2 className="md:text-2xl text-lg">Recent Blog Posts</h2>
       <div className="flex flex-col md:h-[calc(100vh-100px)] gap-4 md:flex-row pt-4">
-        <div className="w-full flex py-2 md:py-4 flex-col gap-2 md:w-1/2 px-4 ">
+        <div className="w-full flex py-2 md:py-4 flex-col gap-2 md:w-1/2 px-4 cursor-pointer group ">
           <Image
             src="https://images.pexels.com/photos/5380678/pexels-photo-5380678.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
             alt="Image"
@@ -38,7 +38,7 @@ const Landing = () => {
           <h2 className="text-purple md:text-lg md:font-medium font-normal ">
             Sunday, Jan 01,2023
           </h2>
-          <div className="flex justify-between items-center cursor-pointer group">
+          <div className="flex justify-between items-center">
             <h1 className="text-offwhite md:text-2xl text-xl font-semibold ">
               UX review presentations
             </h1>

@@ -16,7 +16,7 @@ const BlogCard = ({
   return (
     <div
       className={cn(
-        "md:h-[40vh] h-[50vh] flex md:flex-row flex-col gap-4 px-2 ",
+        "md:h-[40vh] h-[50vh] flex md:flex-row flex-col gap-4 px-2 cursor-pointer group ",
         className
       )}
     >
@@ -25,7 +25,7 @@ const BlogCard = ({
       </div>
       <div className="md:w-1/2 w-full flex flex-col gap-2 justify-center ">
         <h2 className="text-purple ">{date}</h2>
-        <div className="flex justify-between items-center cursor-pointer group">
+        <div className="flex justify-between items-center ">
           <h1 className="text-offwhite text-xl font-medium  ">{title}</h1>
           <MdOutlineArrowOutward
             size={26}
