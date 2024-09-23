@@ -7,20 +7,22 @@ import { CiCirclePlus } from "react-icons/ci";
 import colors from "@/utils/colors";
 import "./post-blog.css";
 import "react-quill/dist/quill.bubble.css";
+import { getDate } from "@/utils/dateFormatter";
 // import Image from "next/image";
 
 const PostBlog = () => {
   const [value, setValue] = useState("");
   const [title, setTitle] = useState("");
   const [image, setImage] = useState<File | null>();
-  const [imageURL, setImageURL] = useState("");
+  const [imageURL, setImageURL] = useState<string | ArrayBuffer | null>("");
   const [filter, setFilter] = useState("Food");
+  const [currentDate, setCurrentDate] = useState(getDate());
   // const [show, setShow] = useState(false);
 
   const modules = {
     toolbar: [
       [{ header: [1, 2, 3, 4, 5, 6, false] }],
-      ["bold", "italic", "underline", "strike", "blockquote"],
+      ["bold", "italic", "underline", "strike"],
       [{ align: ["right", "center", "justify"] }],
       [{ list: "ordered" }, { list: "bullet" }],
       ["link"],
@@ -33,6 +35,7 @@ const PostBlog = () => {
       title: title,
       content: value,
       filter: filter,
+      date: currentDate,
     };
     localStorage.setItem("blog_data", JSON.stringify(blogData));
   };
@@ -44,9 +47,19 @@ const PostBlog = () => {
     if (files && files.length > 0) {
       const file = files[0];
       setImage(file);
-      setImageURL(URL.createObjectURL(file));
-      console.log("File selected: ", file);
-      console.log("URL created: ", imageURL);
+
+      const reader = new FileReader(); //allows to asynchronously read the contents of files stored on the user’s computer
+
+      reader.readAsDataURL(file); // reads the file and encodes its contents as a Base64 string
+
+      reader.onloadend = () => {
+        const base64Image = reader.result; // Base64 string
+        setImageURL(base64Image);
+        // console.log("Base64 Image: ", base64Image);
+      };
+
+      // console.log("File selected: ", file);
+      // console.log("URL created: ", imageURL);
     }
   };
 
@@ -54,8 +67,8 @@ const PostBlog = () => {
     fileInputRef.current?.click();
   };
 
-  // const savedBlogData = localStorage.getItem("blog_data");
-  // const parsedBlogData = savedBlogData ? JSON.parse(savedBlogData) : null;
+  const savedBlogData = localStorage.getItem("blog_data");
+  const parsedBlogData = savedBlogData ? JSON.parse(savedBlogData) : null;
 
   return (
     <div className="md:px-32 px-8 py-6 ">
