@@ -91,8 +91,8 @@ const PostBlog = () => {
           className="text-3xl text-offwhite bg-transparent outline-none"
           onChange={(e) => setTitle(e.target.value)}
         />
-        <div className="flex justify-between items-center ">
-          <div className="flex items-center gap-2">
+        <div className="flex flex-col md:flex-row justify-between ">
+          <div className="flex  items-center gap-2">
             <CiCirclePlus
               size={30}
               color={colors.offwhite}
@@ -111,7 +111,7 @@ const PostBlog = () => {
           <select
             name="Filter"
             id="filter"
-            className="mt-2 bg-gray-200 rounded-3xl md:px-4 px-2"
+            className="mt-2 max-w-min bg-gray-200 rounded-3xl md:px-4 px-2"
             onChange={(e) => setFilter(e.target.value)}
           >
             <option value="Food">Food</option>
