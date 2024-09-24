@@ -3,6 +3,7 @@ import "./globals.css";
 import { Poppins } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import Border from "@/components/Border";
+import { SessionProvider } from "next-auth/react";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -24,9 +25,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${poppins.className} bg-bgcolor`}>
-        <Navbar />
-        <Border />
-        {children}
+        <SessionProvider>
+          <Navbar />
+          <Border />
+          {children}
+        </SessionProvider>
       </body>
     </html>
   );
