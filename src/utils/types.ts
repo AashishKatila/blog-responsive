@@ -3,6 +3,7 @@ import { z, ZodType } from "zod";
 export interface IButton{
     text: string;
     buttonStyle?: string;
+    onClick? : () => void;
 }
 
 export interface ILabel{
@@ -19,13 +20,13 @@ export interface IBlogCard{
 }
 
 export type ILogin = {
-    email: string;
+    username: string;
     password: string;
 };
 
 export const UserSchema: ZodType<ILogin> = z
 .object({
-  email: z.string().email(),
+    username: z.string().min(3, { message: "User name is too short" }),
   password: z
     .string()
     .min(4, { message: "Password is too short" })
