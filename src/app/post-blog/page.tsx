@@ -1,23 +1,50 @@
 "use client";
 
-import { ChangeEvent, useRef, useState } from "react";
+import { useState, useEffect, useRef, ChangeEvent } from "react";
 import ReactQuill from "react-quill";
-import Button from "@/components/Button";
-import { CiCirclePlus } from "react-icons/ci";
-import colors from "@/utils/colors";
-import "./post-blog.css";
-import "react-quill/dist/quill.bubble.css";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { getDate } from "@/utils/dateFormatter";
-// import Image from "next/image";
+import Button from "@/components/Button";
+import "react-quill/dist/quill.bubble.css";
+import "./post-blog.css";
+import colors from "@/utils/colors";
+import { CiCirclePlus } from "react-icons/ci";
+import { toast } from "react-toastify";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { BlogPost, BlogSchema } from "@/utils/types";
 
 const PostBlog = () => {
-  const [value, setValue] = useState("");
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm<BlogPost>({
+    resolver: zodResolver(BlogSchema),
+    defaultValues: {
+      createdAt: getDate(),
+      label: "Food",
+      author: session?.user?.name || "Anonymous",
+    },
+  });
+
+  const [valueEditor, setValueEditor] = useState("");
   const [title, setTitle] = useState("");
   const [image, setImage] = useState<File | null>();
   const [imageURL, setImageURL] = useState<string | ArrayBuffer | null>("");
   const [filter, setFilter] = useState("Food");
-  const [currentDate, setCurrentDate] = useState(getDate());
-  // const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    if (status === "loading") return;
+    if (!session) {
+      router.push("/");
+    }
+  }, [session, status]);
 
   const modules = {
     toolbar: [
@@ -29,15 +56,18 @@ const PostBlog = () => {
     ],
   };
 
-  const handlePost = () => {
+  const handleDraft = () => {
+    const author = session?.user?.name || "Anonymous";
     const blogData = {
       image: imageURL,
       title: title,
-      content: value,
       filter: filter,
-      date: currentDate,
+      blog: valueEditor,
+      label: filter,
+      author: author,
     };
     localStorage.setItem("blog_data", JSON.stringify(blogData));
+    toast("Saved as Draft");
   };
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -54,12 +84,15 @@ const PostBlog = () => {
 
       reader.onloadend = () => {
         const base64Image = reader.result; // Base64 string
-        setImageURL(base64Image);
-        // console.log("Base64 Image: ", base64Image);
+        if (typeof base64Image === "string") {
+          setImageURL(base64Image);
+          setValue("image", base64Image);
+        } else {
+          console.error(
+            "Error: Image could not be converted to base64 string."
+          );
+        }
       };
-
-      // console.log("File selected: ", file);
-      // console.log("URL created: ", imageURL);
     }
   };
 
@@ -67,19 +100,56 @@ const PostBlog = () => {
     fileInputRef.current?.click();
   };
 
-  const savedBlogData = localStorage.getItem("blog_data");
-  const parsedBlogData = savedBlogData ? JSON.parse(savedBlogData) : null;
+  const onSubmit: SubmitHandler<BlogPost> = async (data) => {
+    console.log("Submit triggered");
+    console.log("Data = ", data);
+    let blogData;
+    if (status === "authenticated" && session && session.user) {
+      blogData = {
+        title: title,
+        blog: valueEditor,
+        label: data.label,
+        image: imageURL,
+        author: data.author,
+        createdAt: data.createdAt,
+      };
+    }
+    const PROJECT_TOKEN = process.env.NEXT_PUBLIC_MOCK_API_SECRET_KEY;
+
+    fetch(`https://${PROJECT_TOKEN}.mockapi.io/api/v1/blogs`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(blogData),
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`Error: ${res.status} ${res.statusText}`);
+        }
+        return res.json();
+      })
+      .then((_) => {
+        toast.success("Succesfully Published");
+        setTimeout(() => {
+          router.push("/");
+        }, 1000);
+      })
+      .catch((error) => {
+        toast.error("Error while posting");
+        console.log("Error", error);
+      });
+  };
 
   return (
-    <div className="md:px-32 px-8 py-6 ">
+    <form className="md:px-32 px-8 py-6" onSubmit={handleSubmit(onSubmit)}>
       <div className="w-full flex md:gap-6 gap-4 justify-end">
         <Button
           text=" Save as Draft"
-          buttonStyle="bg-blue-400 text-offwhite md:text-lg text-sm  "
+          buttonStyle="bg-blue-400 text-offwhite md:text-lg text-sm"
+          onClick={handleDraft}
         />
         <button
           className="px-6 py-1 rounded-3xl bg-purple text-offwhite md:text-lg text-sm"
-          onClick={handlePost}
+          type="submit"
         >
           + Post
         </button>
@@ -88,9 +158,13 @@ const PostBlog = () => {
         <input
           type="text"
           placeholder="Title"
+          {...register("title")}
           className="text-3xl text-offwhite bg-transparent outline-none"
           onChange={(e) => setTitle(e.target.value)}
         />
+        {errors.title && (
+          <span className="text-red-600">{errors.title.message}</span>
+        )}
         <div className="flex flex-col md:flex-row justify-between ">
           <div className="flex  items-center gap-2">
             <CiCirclePlus
@@ -108,11 +182,17 @@ const PostBlog = () => {
             accept="image/*"
             onChange={handleFileChange}
           />
+          {errors.image && (
+            <span className="text-red-600">{errors.image.message}</span>
+          )}
           <select
             name="Filter"
             id="filter"
             className="mt-2 max-w-min bg-gray-200 rounded-3xl md:px-4 px-2"
-            onChange={(e) => setFilter(e.target.value)}
+            onChange={(e) => {
+              setFilter(e.target.value);
+              console.log(e.target.value);
+            }}
           >
             <option value="Food">Food</option>
             <option value="Tech">Tech</option>
@@ -122,46 +202,19 @@ const PostBlog = () => {
       </div>
       <ReactQuill
         theme="bubble"
-        value={value}
-        onChange={setValue}
+        value={valueEditor}
+        onChange={(val) => {
+          setValueEditor(val);
+          setValue("content", val);
+        }}
         className="mt-6 bg-offwhite min-h-[calc(100vh-300px)]"
         placeholder="Enter your blog"
         modules={modules}
       />
-
-      {/* FOR TEST  */}
-
-      {/* <button
-        onClick={() => setShow((prev) => !prev)}
-        className="text-white text-3xl m-10"
-      >
-        Show
-      </button> */}
-
-      {/* {show && parsedBlogData && (
-        <div className="text-xl text-white">
-          <Image
-            src={parsedBlogData.image}
-            alt="Image"
-            width={400}
-            height={400}
-          />
-          <p className="text-3xl">{parsedBlogData.title}</p>
-          <div
-            dangerouslySetInnerHTML={{
-              __html: parsedBlogData.content,
-            }}
-            className="text-xl text-white"
-          />
-          <p>
-            By : <span className="font-semibold">Aashish Katila</span>
-          </p>
-          <p>
-            <span className="">Label :</span> {parsedBlogData.filter}
-          </p>
-        </div>
-      )} */}
-    </div>
+      {errors.content && (
+        <span className="text-red-600">{errors.content.message}</span>
+      )}
+    </form>
   );
 };
 
