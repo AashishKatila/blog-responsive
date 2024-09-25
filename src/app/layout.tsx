@@ -4,6 +4,8 @@ import { Poppins } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import Border from "@/components/Border";
 import { SessionProvider } from "next-auth/react";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -26,6 +28,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${poppins.className} bg-bgcolor`}>
         <SessionProvider>
+          <ToastContainer position="top-right" autoClose={1500} />
           <Navbar />
           <Border />
           {children}

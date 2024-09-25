@@ -5,7 +5,8 @@ const colors ={
     label_bg:"#FDF2FA",
     food: "#D70040",
     tech: "#FF00FF",
-    research:"#6941C6"
+    research:"#6941C6",
+    blue: "#3b82f6",
 }
 
 export default colors;

@@ -14,6 +14,7 @@ const config: Config = {
   			offwhite: '#EFEFEF',
   			purple: '#6941C6',
   			label_bg: '#FDF2FA',
+			blue: "#3b82f6",
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			card: {

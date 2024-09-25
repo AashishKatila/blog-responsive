@@ -1,32 +1,34 @@
 "use client";
 
 import { useForm, SubmitHandler } from "react-hook-form";
-import { ILogin, UserSchema } from "@/utils/types";
+import { Login, UserSchema } from "@/utils/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 export default function LoginForm() {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<ILogin>({
+  } = useForm<Login>({
     resolver: zodResolver(UserSchema),
   });
 
   const router = useRouter();
 
-  const onSubmit: SubmitHandler<ILogin> = async (data) => {
+  const onSubmit: SubmitHandler<Login> = async (data) => {
     const result = await signIn("credentials", {
       redirect: false,
       username: data.username,
       password: data.password,
     });
-    if (result?.ok) {
+    if (result?.error) {
+      toast.error("Invalid Credentials");
+    } else if (result?.ok) {
+      toast.success("Login Succesful");
       router.push("/");
-    } else {
-      console.error(result?.error);
     }
   };
 

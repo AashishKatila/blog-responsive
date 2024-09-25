@@ -1,12 +1,37 @@
 "use client";
 
-import { useState } from "react";
 import Button from "./Button";
 import Link from "next/link";
+import { useSession, signOut } from "next-auth/react";
+import { toast } from "react-toastify";
 
 const Navbar = () => {
-  // TEMPORARY
-  const [isLoggedIn, seIsLoggedIn] = useState(true);
+  const { status } = useSession();
+
+  const isLoggedIn = status === "authenticated";
+
+  function handleLogout() {
+    toast(
+      ({ closeToast }) => (
+        <div className="flex flex-col gap-2 items-center justify-center">
+          <p>Are you sure you want to logout?</p>
+          <Button
+            text="Logout"
+            buttonStyle="bg-blue text-offwhite font-semibold"
+            onClick={() => {
+              closeToast();
+              signOut({ callbackUrl: "/" });
+            }}
+          />
+        </div>
+      ),
+      {
+        autoClose: false,
+        closeButton: true,
+        position: "top-center",
+      }
+    );
+  }
 
   return (
     <div className="md:px-32 px-8 h-20 text-offwhite flex items-center justify-between">
@@ -30,9 +55,7 @@ const Navbar = () => {
             <Button text="Login" />
           </Link>
         ) : (
-          <Link href="/">
-            <Button text="Logout" />
-          </Link>
+          <Button text="Logout" onClick={handleLogout} />
         )}
       </div>
     </div>
