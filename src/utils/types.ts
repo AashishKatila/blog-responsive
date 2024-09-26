@@ -1,4 +1,4 @@
-import { title } from "process";
+import { UseFormRegister, UseFormSetValue } from "react-hook-form";
 import { z, ZodType } from "zod"; 
 
 export interface IButton{
@@ -45,10 +45,10 @@ const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/web
 
 export type BlogPost = {
     title: string;
-    content: string;
+    blog: string;
     author?: string;
-    createdAt?: string;
-    label?: "Food" | "Tech" | "Research";
+    createdAt: string;
+    label: "Food" | "Tech" | "Research";
     image: string;
 }
 
@@ -57,7 +57,7 @@ export const BlogSchema: ZodType<BlogPost> = z
     title: z.string()
     .min(2, { message: "Title is too short" })
     .max(30, { message: "Title is too long" }),
-    content: z.string(),
+    blog: z.string(),
     label: z.enum(["Food", "Tech", "Research"]),
     author: z.string(),
     createdAt: z.string(),
@@ -75,3 +75,32 @@ export const BlogSchema: ZodType<BlogPost> = z
       "Only .jpg, .jpeg, .png, and .webp formats are supported."
     ),
 })
+
+export interface ITitleInput{
+  register: UseFormRegister<BlogPost> ;
+  title: string;
+  setTitle: (title: string) => void;
+  errors: any;
+}
+
+export interface IUploadImageProps {
+  setValue: UseFormSetValue<BlogPost>;
+  setImageURL: (value: string | ArrayBuffer | null) => void;
+  errors: any;
+}
+
+export interface IChooseLabel{
+  filter: string;
+  setFilter: (filter: string) => void;
+}
+
+export interface IQuillTextEditor{
+  valueEditor: string;
+  setValueEditor: (value: string) => void;
+  setValue: UseFormSetValue<BlogPost>;
+  errors: any;
+}
+
+export interface IFormButtons {
+  handleDraft: () => void;
+}
