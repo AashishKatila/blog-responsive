@@ -19,6 +19,11 @@ export interface IBlogCard{
     labelText: "Food" | "Tech" | "Research";
     className?: string;
     author? : string
+    id: string;
+}
+
+export interface IUseFetchProps {
+  url?: string;
 }
 
 export type Login = {
