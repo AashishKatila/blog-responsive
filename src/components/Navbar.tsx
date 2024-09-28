@@ -41,14 +41,18 @@ const Navbar = () => {
         </Link>
       </div>
 
-      <div className="flex items-center gap-2 md:gap-6 ">
+      <div className="flex items-center gap-4 md:gap-6 ">
         {isLoggedIn && (
           <Link href="/post-blog">
-            <h2 className="md:text-lg text-sm cursor-pointer ">Post blog</h2>
+            <h2 className="md:text-lg text-sm hover:text-purple cursor-pointer ">
+              Post blog
+            </h2>
           </Link>
         )}
-        <Link href="/all-blogs">
-          <h2 className="md:text-lg text-sm cursor-pointer ">All blogs</h2>
+        <Link href="/blogs">
+          <h2 className="md:text-lg text-sm hover:text-purple cursor-pointer">
+            All blogs
+          </h2>
         </Link>
         {!isLoggedIn ? (
           <Link href="/login">

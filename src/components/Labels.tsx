@@ -1,7 +1,8 @@
+import { cn } from "@/lib/utils";
 import colors from "@/utils/colors";
 import { ILabel } from "@/utils/types";
 
-const Labels = ({ label }: ILabel) => {
+const Labels = ({ label, labelStyle }: ILabel) => {
   const labelColors: {
     [key in ILabel["label"]]: string;
   } = {
@@ -11,7 +12,10 @@ const Labels = ({ label }: ILabel) => {
   };
   return (
     <div
-      className="md:px-8 max-w-min px-4 py-1 md:text-md text-lg font-medium rounded-3xl cursor-pointer bg-label_bg "
+      className={cn(
+        `md:px-8 max-w-min px-4 md:text-lg text-md font-medium rounded-3xl cursor-pointer bg-label_bg`,
+        labelStyle
+      )}
       style={{
         color: labelColors[label],
       }}
