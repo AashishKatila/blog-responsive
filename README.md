@@ -58,7 +58,7 @@ src
 
 ```bash
 git clone https://github.com/AashishKatila/blog-responsive.git
-cd blog-project
+cd blog-responsive
 ```
 
 2. Install dependencies
