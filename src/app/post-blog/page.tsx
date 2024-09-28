@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { getDate } from "@/utils/dateFormatter";
 import { toast } from "react-toastify";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -29,7 +28,7 @@ const PostBlog = () => {
   } = useForm<BlogPost>({
     resolver: zodResolver(BlogSchema),
     defaultValues: {
-      createdAt: getDate(),
+      createdAt: new Date().toISOString(),
       label: "Food",
       author: session?.user?.name || "Anonymous",
     },
@@ -47,6 +46,19 @@ const PostBlog = () => {
     }
   }, [session, status]);
 
+  useEffect(() => {
+    // Load draft data from local storage
+    const savedDraft = localStorage.getItem(`blog_data_${session?.user?.name}`);
+    if (savedDraft) {
+      const draftData = JSON.parse(savedDraft);
+      setValue("title", draftData.title);
+      setTitle(draftData.title);
+      setImageURL(draftData.image);
+      setValueEditor(draftData.blog);
+      setFilter(draftData.label);
+    }
+  }, []);
+
   const handleDraft = () => {
     const author = session?.user?.name || "Anonymous";
     const blogData = {
@@ -58,7 +70,10 @@ const PostBlog = () => {
       label: filter,
       author: author,
     };
-    localStorage.setItem("blog_data", JSON.stringify(blogData));
+    localStorage.setItem(
+      `blog_data_${session?.user?.name}`,
+      JSON.stringify(blogData)
+    );
     toast("Saved as Draft");
   };
 
@@ -70,14 +85,17 @@ const PostBlog = () => {
       blogData = {
         title: title,
         blog: valueEditor,
-        label: data.label,
+        label: filter,
         image: imageURL,
         author: data.author,
         createdAt: data.createdAt,
       };
+
       const result = await mutateData(blogData as BlogPost);
+
       if (result) {
         toast.success("Succesfully Published");
+        localStorage.removeItem("blog_data");
         setTimeout(() => {
           router.push("/");
         }, 1000);
