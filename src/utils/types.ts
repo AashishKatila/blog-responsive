@@ -1,4 +1,4 @@
-import { UseFormRegister, UseFormSetValue } from "react-hook-form";
+import { FieldError, UseFormRegister, UseFormSetValue } from "react-hook-form";
 import { z, ZodType } from "zod"; 
 
 export interface IButton{
@@ -9,6 +9,7 @@ export interface IButton{
 
 export interface ILabel{
     label: "Food" | "Tech" | "Research";
+    labelStyle ?: string;
 }
 
 export interface IBlogCard{
@@ -24,6 +25,14 @@ export interface IBlogCard{
 
 export interface IUseFetchProps {
   url?: string;
+}
+
+export interface InputFieldProps {
+  label: string;
+  type: string;
+  placeholder: string;
+  register: UseFormRegister<any>;
+  error?: FieldError;
 }
 
 export type Login = {
@@ -44,6 +53,7 @@ const MAX_FILE_SIZE = 512 * 1024;
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
 export type BlogPost = {
+  id? : string;
     title: string;
     blog: string;
     author?: string;
@@ -54,6 +64,7 @@ export type BlogPost = {
 
 export const BlogSchema: ZodType<BlogPost> = z
 .object({
+    id: z.string().optional(),
     title: z.string()
     .min(2, { message: "Title is too short" })
     .max(30, { message: "Title is too long" }),
@@ -103,4 +114,29 @@ export interface IQuillTextEditor{
 
 export interface IFormButtons {
   handleDraft: () => void;
+}
+
+export interface IPageControl{
+  lastPage: number;
+  currentPage:number;
+  setCurrentPage: (value:number) => void;
+  handleNextPage:() => void;
+  handlePrevPage: () => void;
+}
+
+export interface IFilterProps{
+  filter:string;
+  setFilter: (value:string) => void;
+  setDateFilter: (value:string) => void;
+  setLabelFilter: (value:string) => void;
+}
+
+export interface ILoader{
+  count: number;
+  skeletonStyle?: string;
+  loaderStyle?: string;
+}
+
+export interface IError{
+  error: any
 }
