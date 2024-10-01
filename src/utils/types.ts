@@ -31,6 +31,7 @@ export interface InputFieldProps {
   label: string;
   type: string;
   placeholder: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   register: UseFormRegister<any>;
   error?: FieldError;
 }
@@ -91,12 +92,14 @@ export interface ITitleInput{
   register: UseFormRegister<BlogPost> ;
   title: string;
   setTitle: (title: string) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   errors: any;
 }
 
 export interface IUploadImageProps {
   setValue: UseFormSetValue<BlogPost>;
   setImageURL: (value: string | ArrayBuffer | null) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   errors: any;
 }
 
@@ -109,6 +112,7 @@ export interface IQuillTextEditor{
   valueEditor: string;
   setValueEditor: (value: string) => void;
   setValue: UseFormSetValue<BlogPost>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   errors: any;
 }
 
@@ -138,5 +142,6 @@ export interface ILoader{
 }
 
 export interface IError{
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   error: any
 }

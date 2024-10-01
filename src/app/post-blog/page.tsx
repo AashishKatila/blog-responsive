@@ -11,14 +11,21 @@ import useMutate from "@/hooks/useMutate";
 import ChooseLabel from "@/components/ChooseLabel";
 import ImageUpload from "@/components/ImageUpload";
 import TitleInput from "@/components/TitleInput";
-import QuillTextEditor from "@/components/QuillTextEditor";
 import FormButtons from "@/components/FormButtons";
+import dynamic from "next/dynamic";
 
 const PostBlog = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
 
   const { mutateData } = useMutate();
+
+  const QuillTextEditor = dynamic(
+    () => import("@/components/QuillTextEditor"),
+    {
+      ssr: false,
+    }
+  );
 
   const {
     register,
@@ -44,7 +51,7 @@ const PostBlog = () => {
     if (!session) {
       router.push("/");
     }
-  }, [session, status]);
+  }, [session, status, router]);
 
   useEffect(() => {
     // Load draft data from local storage
@@ -57,7 +64,7 @@ const PostBlog = () => {
       setValueEditor(draftData.blog);
       setFilter(draftData.label);
     }
-  }, []);
+  }, [session]);
 
   const handleDraft = () => {
     const author = session?.user?.name || "Anonymous";
@@ -78,8 +85,8 @@ const PostBlog = () => {
   };
 
   const onSubmit: SubmitHandler<BlogPost> = async (data) => {
-    console.log("Submit triggered");
-    console.log("Data = ", data);
+    // console.log("Submit triggered");
+    // console.log("Data = ", data);
     let blogData;
     if (status === "authenticated" && session && session.user) {
       blogData = {

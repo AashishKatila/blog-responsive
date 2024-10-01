@@ -26,7 +26,7 @@ const AllBlogs = () => {
   useEffect(() => {
     const queryString = `?page=${currentPage}&limit=${limit}`;
     router.push(queryString);
-  }, [currentPage, limit]);
+  }, [currentPage, limit, router]);
 
   useEffect(() => {
     setCurrentPage(1);
@@ -103,6 +103,7 @@ const AllBlogs = () => {
           paginatedData.map((item) => (
             <BlogCard
               date={item.createdAt || ""}
+              key={item.id}
               description={item.blog}
               imageSource={item.image}
               labelText={item.label}

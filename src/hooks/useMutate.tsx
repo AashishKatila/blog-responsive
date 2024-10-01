@@ -25,7 +25,6 @@ const useMutate = () => {
         throw new Error("Network response was not ok");
       }
       const result = await response.json();
-      console.log("Result = ", result);
       setSuccess(true);
       return result;
     } catch (error) {
@@ -35,7 +34,7 @@ const useMutate = () => {
       setLoading(false);
     }
   };
-  return { mutateData };
+  return { mutateData, loading, error, success };
 };
 
 export default useMutate;

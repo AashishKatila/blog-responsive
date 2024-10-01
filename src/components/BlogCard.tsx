@@ -18,7 +18,7 @@ const BlogCard = ({
   className,
   id,
 }: IBlogCard) => {
-  const [shortDesc, useShortDesc] = useState("");
+  const [shortDesc, setShortDesc] = useState("");
   const router = useRouter();
 
   const formattedDate = getDate({ date });
@@ -29,7 +29,7 @@ const BlogCard = ({
 
   useEffect(() => {
     const contents = description.split(" ").slice(0, 12).join(" ");
-    useShortDesc(contents);
+    setShortDesc(contents);
   }, [description]);
   return (
     <div
